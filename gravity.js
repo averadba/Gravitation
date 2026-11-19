@@ -7,6 +7,8 @@ const instances = new WeakMap()
 function makeSim(parentElement, setTriggerValue) {
   const canvas = parentElement.querySelector("#sim")
   const hud = parentElement.querySelector("#hud")
+  // parentElement may be a ShadowRoot (not an Element), so measure/observe the wrapper div.
+  const wrap = parentElement.querySelector(".wrap")
   const ctx = canvas.getContext("2d")
 
   const sim = {
@@ -24,7 +26,7 @@ function makeSim(parentElement, setTriggerValue) {
 
   function resize() {
     const dpr = window.devicePixelRatio || 1
-    const w = parentElement.clientWidth || 800
+    const w = wrap.clientWidth || 800
     const h = sim.params.height || 600
     canvas.width = Math.floor(w * dpr)
     canvas.height = Math.floor(h * dpr)
@@ -34,7 +36,7 @@ function makeSim(parentElement, setTriggerValue) {
   }
   sim.resize = resize
   const ro = new ResizeObserver(resize)
-  ro.observe(parentElement)
+  ro.observe(wrap)
 
   const toWorld = (sx, sy) => {
     const w = canvas.clientWidth, h = canvas.clientHeight
